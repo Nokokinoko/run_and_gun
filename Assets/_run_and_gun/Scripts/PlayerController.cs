@@ -1,3 +1,4 @@
+using System.Linq;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -68,7 +69,7 @@ public class PlayerController : MonoBehaviour
                 {
                     m_Rigidbody.velocity = Vector3.zero;
                     m_Rigidbody.angularVelocity = Vector3.zero;
-                    Idle();
+                    m_Animator.Play(ANIME_IDLE);
                 }
                 else
                 {
@@ -81,7 +82,7 @@ public class PlayerController : MonoBehaviour
                     m_Rigidbody.velocity = _Lerp * m_MoveRatio;
                     m_PrevVelocity = _Velocity;
 
-                    Walk();
+                    m_Animator.Play(ANIME_WALK);
 
                     m_Rigidbody.rotation = Quaternion.Slerp(
                         m_Rigidbody.rotation,
@@ -97,22 +98,15 @@ public class PlayerController : MonoBehaviour
     {
         m_Movable = true;
     }
-    
-    #region ANIMATION
-    private void Idle()
-    {
-        m_Animator.Play(ANIME_IDLE);
-    }
-
-    private void Walk()
-    {
-        m_Animator.Play(ANIME_WALK);
-    }
-    #endregion
 
     private void OnDamage()
     {
         m_Movable = false;
+
+        m_Animator.enabled = false;
+        var _ = GetComponentsInChildren<Rigidbody>()
+            .Where(_rigidbody => m_Rigidbody != _rigidbody)
+            .Select(_rigidbody => _rigidbody.isKinematic = false);
         
         GameEventManager.Notify(GameEvent.ResultFail);
     }
