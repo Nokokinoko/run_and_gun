@@ -4,6 +4,7 @@ using DG.Tweening;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(Collider))]
 public class EnemyController : MonoBehaviour
@@ -21,11 +22,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private List<Material> m_ListMaterials;
 
     private Transform m_Transform;
+    private NavMeshAgent m_NavAgent;
     private Collider m_Collider;
     private bool m_IsGaming = false;
     
-    private PlayerController m_Target;
-    public PlayerController Target { set { m_Target = value; } }
+    private Transform m_Target;
+    public Transform Target { set { m_Target = value; } }
 
     private const string TAG_BULLET = "Bullet";
 
@@ -45,16 +47,21 @@ public class EnemyController : MonoBehaviour
     private void Awake()
     {
         m_Transform = transform;
+        m_NavAgent = GetComponent<NavMeshAgent>();
         m_Collider = GetComponent<Collider>();
         
         this.UpdateAsObservable()
             .Where(_ => m_IsGaming && m_Target)
             .Subscribe(_ => {
-                Vector3 _direction = m_Target.transform.position - m_Transform.position;
+                Vector3 _targetPosition = m_Target.position;
+                _targetPosition.y = m_Transform.position.y;
+                
+                Vector3 _direction = _targetPosition - m_Transform.position;
                 _direction.y = 0.0f;
                 Quaternion _rotation = Quaternion.LookRotation(_direction, Vector3.up);
                 m_Transform.rotation = _rotation;
-                m_Transform.position += m_Transform.forward * 0.04f;
+
+                m_NavAgent.SetDestination(_targetPosition);
             })
             .AddTo(this);
 

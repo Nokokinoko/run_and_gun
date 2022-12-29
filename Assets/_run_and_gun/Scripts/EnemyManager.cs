@@ -14,7 +14,7 @@ public class EnemyManager : MonoBehaviour
             m_ListEnemys.Add(_child.GetComponent<EnemyController>());
         }
 
-        m_ListEnemys.ForEach(_ctrl => _ctrl.Target = m_CtrlPlayer);
+        m_ListEnemys.ForEach(_ctrl => _ctrl.Target = m_CtrlPlayer.transform);
     }
 
     public void GameStart()

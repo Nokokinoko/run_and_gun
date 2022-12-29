@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UniRx;
 using UniRx.Triggers;
@@ -9,7 +10,7 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody m_Rigidbody;
     private Collider m_Collider;
-    private bool m_Movable = false;
+    private bool m_IsMovable = false;
     
     private Vector2 m_PointRef = Vector2.zero;
     private Vector2 m_NormalizedDirection = Vector2.zero;
@@ -27,16 +28,24 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
-        m_Collider = GetComponent<Collider>();
         
+        m_Collider = GetComponent<Collider>();
         m_Collider.OnTriggerEnterAsObservable()
             .Where(_collider => _collider.CompareTag(TAG_ENEMY))
             .Subscribe(_ => OnDamage())
             .AddTo(this);
 
+        foreach (var _child in GetComponentsInChildren<Collider>())
+        {
+            if (m_Collider != _child)
+            {
+                _child.enabled = false;
+            }
+        }
+
         this.UpdateAsObservable()
             .Subscribe(_ => {
-                if (m_Movable)
+                if (m_IsMovable)
                 {
                     switch (InputManager.GetTouch())
                     {
@@ -96,17 +105,25 @@ public class PlayerController : MonoBehaviour
 
     public void GameStart()
     {
-        m_Movable = true;
+        m_IsMovable = true;
     }
 
     private void OnDamage()
     {
-        m_Movable = false;
+        m_IsMovable = false;
 
+        m_Collider.enabled = false;
         m_Animator.enabled = false;
-        var _ = GetComponentsInChildren<Rigidbody>()
-            .Where(_rigidbody => m_Rigidbody != _rigidbody)
-            .Select(_rigidbody => _rigidbody.isKinematic = false);
+        
+        foreach (var _child in GetComponentsInChildren<Collider>())
+        {
+            if (m_Collider != _child)
+            {
+                _child.enabled = true;
+                Rigidbody _rigidbody = _child.GetComponent<Rigidbody>();
+                _rigidbody.isKinematic = false;
+            }
+        }
         
         GameEventManager.Notify(GameEvent.ResultFail);
     }
