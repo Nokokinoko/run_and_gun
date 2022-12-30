@@ -35,6 +35,11 @@ public class EnemyController : MonoBehaviour
 
     private void OnValidate()
     {
+        ChangeMaterial();
+    }
+
+    private void ChangeMaterial()
+    {
         int _key = (int)m_Level - 1;
         if (_key < 0 || m_ListMaterials.Count < _key)
         {
@@ -74,7 +79,7 @@ public class EnemyController : MonoBehaviour
 
         m_Collider.OnTriggerEnterAsObservable()
             .Where(_collider => _collider.CompareTag(GameDefinitions.TAG_BULLET))
-            .Subscribe(_ => OnHit())
+            .Subscribe(_collider => OnHit(_collider))
             .AddTo(this);
     }
 
@@ -100,8 +105,18 @@ public class EnemyController : MonoBehaviour
         m_NavAgent.enabled = false;
     }
 
-    private void OnHit()
+    private void OnHit(Collider collider)
     {
-        
+        Destroy(collider.gameObject);
+
+        if (m_Level == ENUM_ENEMY_LEVEL.ENEMY_LEVEL_1)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            m_Level = (ENUM_ENEMY_LEVEL)((int)m_Level - 1);
+            ChangeMaterial();
+        }
     }
 }
