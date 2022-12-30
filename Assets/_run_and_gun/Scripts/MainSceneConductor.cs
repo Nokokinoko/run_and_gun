@@ -19,6 +19,9 @@ public class MainSceneConductor : MonoBehaviour
 
     private void Start()
     {
+        m_CtrlPlayer.MgrEnemy = m_MgrEnemy;
+        m_MgrEnemy.CtrlPlayer = m_CtrlPlayer;
+        
         GameEventManager
             .OnReceivedAsObservable(GameEvent.GameStart)
             .Subscribe(_ => GameStart())

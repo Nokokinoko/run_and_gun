@@ -1,35 +1,39 @@
 using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    [SerializeField] private PlayerController m_CtrlPlayer;
-
     private readonly List<EnemyController> m_ListEnemys = new List<EnemyController>();
 
-    private void Start()
+    private PlayerController m_CtrlPlayer = null;
+    public PlayerController CtrlPlayer { set { m_CtrlPlayer = value; } }
+    
+    private async void Start()
     {
+        await UniTask.WaitUntil(() => m_CtrlPlayer != null);
+        
         foreach (Transform _child in transform)
         {
-            m_ListEnemys.Add(_child.GetComponent<EnemyController>());
+            var _ctrl = _child.GetComponent<EnemyController>();
+            _ctrl.Target = m_CtrlPlayer.transform;
+            m_ListEnemys.Add(_ctrl);
         }
-
-        m_ListEnemys.ForEach(_ctrl => _ctrl.Target = m_CtrlPlayer.transform);
     }
 
     public void GameStart()
     {
-        foreach (var _ctrl in m_ListEnemys)
-        {
-            _ctrl.GameStart();
-        }
+        m_ListEnemys.ForEach(_ctrl => _ctrl.GameStart());
     }
 
     public void GameEnd()
     {
-        foreach (var _ctrl in m_ListEnemys)
-        {
-            _ctrl.GameEnd();
-        }
+        m_ListEnemys.ForEach(_ctrl => _ctrl.GameEnd());
+    }
+
+    public EnemyController Nearest()
+    {
+        return m_ListEnemys.OrderBy(_ctrl => _ctrl.Distance).FirstOrDefault();
     }
 }
