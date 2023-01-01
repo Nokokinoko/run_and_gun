@@ -10,7 +10,7 @@ public class EnemyManager : MonoBehaviour
     private PlayerController m_CtrlPlayer = null;
     public PlayerController CtrlPlayer { set { m_CtrlPlayer = value; } }
     
-    private async void Start()
+    private async UniTask Start()
     {
         await UniTask.WaitUntil(() => m_CtrlPlayer != null);
         
@@ -36,4 +36,7 @@ public class EnemyManager : MonoBehaviour
     {
         return m_ListEnemys.OrderBy(_ctrl => _ctrl.Distance).FirstOrDefault();
     }
+
+    public int NumEnemy => m_ListEnemys.Count;
+    public int NumDestroyEnemy => m_ListEnemys.Count(_ctrl => !_ctrl.IsAlive);
 }

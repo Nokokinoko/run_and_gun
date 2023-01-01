@@ -30,6 +30,9 @@ public class EnemyController : MonoBehaviour
     private Transform m_Target;
     public Transform Target { set { m_Target = value; } }
 
+    private bool m_IsAlive = true;
+    public bool IsAlive => m_IsAlive;
+
     private float m_Distance;
     public float Distance => m_Distance;
 
@@ -111,7 +114,8 @@ public class EnemyController : MonoBehaviour
 
         if (m_Level == ENUM_ENEMY_LEVEL.ENEMY_LEVEL_1)
         {
-            Destroy(gameObject);
+            m_IsAlive = false;
+            gameObject.SetActive(false);
         }
         else
         {

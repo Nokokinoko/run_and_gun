@@ -36,18 +36,19 @@ public class MainSceneConductor : MonoBehaviour
             .OnReceivedAsObservable(GameEvent.ResultFail)
             .Subscribe(_ => ResultFail())
             .AddTo(this);
-        
-        Observable.Timer(TimeSpan.FromSeconds(1.0f))
-            .Subscribe(_ => GameEventManager.Notify(GameEvent.GameStart));
     }
 
     #region GAME EVENT
     private void GameStart()
     {
         m_VCUp.enabled = true;
-        
-        m_CtrlPlayer.GameStart();
-        m_MgrEnemy.GameStart();
+
+        Observable.Timer(TimeSpan.FromSeconds(GameDefinitions.TIME_CINEMACHINE_TRANSITION))
+            .Subscribe(_ => {
+                m_CtrlPlayer.GameStart();
+                m_MgrEnemy.GameStart();
+            })
+            .AddTo(this);
     }
 
     private void ResultClear()

@@ -1,0 +1,85 @@
+using System;
+using UniRx;
+using UnityEngine;
+
+public class UIManager : MonoBehaviour
+{
+    [SerializeField] private TopUI m_TopUI;
+    [SerializeField] private IngameUI m_IngameUI;
+    [SerializeField] private ResultClearUI m_ResultClearUI;
+    [SerializeField] private ResultFailUI m_ResultFailUI;
+
+    [SerializeField] private EnemyManager m_MgrEnemy;
+
+    private const float DELAY_RELOAD = 1.0f;
+    
+    private void Awake()
+    {
+        m_ResultClearUI.RxNext
+            .First()
+            .Subscribe(_transform => {
+                MoneyManager.Instance.GetMoneyByEffect(
+                    _transform,
+                    m_MgrEnemy.NumDestroyEnemy * GameDefinitions.MONEY_BY_ENEMY,
+                    () => Observable.Timer(TimeSpan.FromSeconds(DELAY_RELOAD))
+                        .Subscribe(_ => {
+                            SaveData.Stage++;
+                            ReloadManager.Instance.Reload();
+                        })
+                        .AddTo(this)
+                );
+            })
+            .AddTo(this);
+            
+        m_ResultFailUI.RxNext
+            .First()
+            .Subscribe(_transform => {
+                MoneyManager.Instance.GetMoneyByEffect(
+                    _transform,
+                    m_MgrEnemy.NumDestroyEnemy * GameDefinitions.MONEY_BY_ENEMY,
+                    () => Observable.Timer(TimeSpan.FromSeconds(DELAY_RELOAD))
+                        .Subscribe(_ => ReloadManager.Instance.Reload())
+                        .AddTo(this)
+                );
+            })
+            .AddTo(this);
+        
+        m_IngameUI.SetTextNum(m_MgrEnemy.NumEnemy);
+        
+        this.ObserveEveryValueChanged(_ => m_MgrEnemy.NumDestroyEnemy)
+            .Subscribe(_num => m_IngameUI.SetTextNumDestroy(_num))
+            .AddTo(this);
+    }
+
+    public void EnableTopUI()
+    {
+        m_TopUI.gameObject.SetActive(true);
+        m_IngameUI.gameObject.SetActive(false);
+        m_ResultClearUI.gameObject.SetActive(false);
+        m_ResultFailUI.gameObject.SetActive(false);
+    }
+
+    public void EnableIngameUI()
+    {
+        m_TopUI.gameObject.SetActive(false);
+        m_IngameUI.gameObject.SetActive(true);
+        m_ResultClearUI.gameObject.SetActive(false);
+        m_ResultFailUI.gameObject.SetActive(false);
+    }
+
+    public void EnableResultClearUI()
+    {
+        m_TopUI.gameObject.SetActive(false);
+        m_IngameUI.gameObject.SetActive(false);
+        m_ResultClearUI.Activate();
+        m_ResultFailUI.gameObject.SetActive(false);
+    }
+
+    public void EnableResultFailUI()
+    {
+        m_TopUI.gameObject.SetActive(false);
+        m_IngameUI.gameObject.SetActive(false);
+        m_ResultClearUI.gameObject.SetActive(false);
+        m_ResultFailUI.Activate();
+    }
+}
