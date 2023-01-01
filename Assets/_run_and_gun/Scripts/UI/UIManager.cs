@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private ResultClearUI m_ResultClearUI;
     [SerializeField] private ResultFailUI m_ResultFailUI;
 
+    [Space]
+    [SerializeField] private MoneyUI m_MoneyUI;
     [SerializeField] private EnemyManager m_MgrEnemy;
 
     private const float DELAY_RELOAD = 1.0f;
@@ -44,8 +46,6 @@ public class UIManager : MonoBehaviour
             })
             .AddTo(this);
         
-        m_IngameUI.SetTextNum(m_MgrEnemy.NumEnemy);
-        
         this.ObserveEveryValueChanged(_ => m_MgrEnemy.NumDestroyEnemy)
             .Subscribe(_num => m_IngameUI.SetTextNumDestroy(_num))
             .AddTo(this);
@@ -57,14 +57,18 @@ public class UIManager : MonoBehaviour
         m_IngameUI.gameObject.SetActive(false);
         m_ResultClearUI.gameObject.SetActive(false);
         m_ResultFailUI.gameObject.SetActive(false);
+        m_MoneyUI.gameObject.SetActive(true);
     }
 
     public void EnableIngameUI()
     {
+        m_IngameUI.SetTextNum(m_MgrEnemy.NumEnemy);
+
         m_TopUI.gameObject.SetActive(false);
         m_IngameUI.gameObject.SetActive(true);
         m_ResultClearUI.gameObject.SetActive(false);
         m_ResultFailUI.gameObject.SetActive(false);
+        m_MoneyUI.gameObject.SetActive(false);
     }
 
     public void EnableResultClearUI()
@@ -73,6 +77,7 @@ public class UIManager : MonoBehaviour
         m_IngameUI.gameObject.SetActive(false);
         m_ResultClearUI.Activate();
         m_ResultFailUI.gameObject.SetActive(false);
+        m_MoneyUI.gameObject.SetActive(true);
     }
 
     public void EnableResultFailUI()
@@ -81,5 +86,6 @@ public class UIManager : MonoBehaviour
         m_IngameUI.gameObject.SetActive(false);
         m_ResultClearUI.gameObject.SetActive(false);
         m_ResultFailUI.Activate();
+        m_MoneyUI.gameObject.SetActive(true);
     }
 }

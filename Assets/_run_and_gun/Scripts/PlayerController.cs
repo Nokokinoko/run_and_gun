@@ -147,11 +147,15 @@ public class PlayerController : MonoBehaviour
         m_IsMovable = true;
     }
 
-    private void OnDamage()
+    public void GameEnd()
     {
         m_IsMovable = false;
+        m_HasTarget = false;
         m_NormalizedDirection = Vector2.zero;
+    }
 
+    private void OnDamage()
+    {
         m_Collider.enabled = false;
         
         GameEventManager.Notify(GameEvent.ResultFail);

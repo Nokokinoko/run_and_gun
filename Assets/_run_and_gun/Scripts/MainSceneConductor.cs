@@ -8,6 +8,7 @@ public class MainSceneConductor : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera m_VCBack;
     [SerializeField] private CinemachineVirtualCamera m_VCUp;
 
+    [SerializeField] private UIManager m_MgrUI;
     [SerializeField] private PlayerController m_CtrlPlayer;
     [SerializeField] private EnemyManager m_MgrEnemy;
 
@@ -36,6 +37,8 @@ public class MainSceneConductor : MonoBehaviour
             .OnReceivedAsObservable(GameEvent.ResultFail)
             .Subscribe(_ => ResultFail())
             .AddTo(this);
+        
+        m_MgrUI.EnableTopUI();
     }
 
     #region GAME EVENT
@@ -43,6 +46,7 @@ public class MainSceneConductor : MonoBehaviour
     {
         m_VCUp.enabled = true;
 
+        m_MgrUI.EnableIngameUI();
         Observable.Timer(TimeSpan.FromSeconds(GameDefinitions.TIME_CINEMACHINE_TRANSITION))
             .Subscribe(_ => {
                 m_CtrlPlayer.GameStart();
@@ -55,6 +59,8 @@ public class MainSceneConductor : MonoBehaviour
     {
         m_VCUp.enabled = false;
         
+        m_MgrUI.EnableResultClearUI();
+        m_CtrlPlayer.GameEnd();
         m_MgrEnemy.GameEnd();
     }
 
@@ -63,6 +69,8 @@ public class MainSceneConductor : MonoBehaviour
         m_VCUp.Follow = null;
         m_VCUp.LookAt = null;
         
+        m_MgrUI.EnableResultFailUI();
+        m_CtrlPlayer.GameEnd();
         m_MgrEnemy.GameEnd();
     }
     #endregion

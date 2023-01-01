@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using UniRx;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
@@ -25,6 +26,11 @@ public class EnemyManager : MonoBehaviour
     public void GameStart()
     {
         m_ListEnemys.ForEach(_ctrl => _ctrl.GameStart());
+        
+        this.ObserveEveryValueChanged(_ => NumDestroyEnemy)
+            .Where(_num => NumEnemy <= _num)
+            .Subscribe(_ => GameEventManager.Notify(GameEvent.ResultClear))
+            .AddTo(this);
     }
 
     public void GameEnd()
