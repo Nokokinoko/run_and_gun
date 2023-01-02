@@ -15,10 +15,10 @@ public class ResultClearUI : MonoBehaviour
             .OnClickAsObservable()
             .Select(_ => m_ButtonNext.GetComponent<RectTransform>());
 
-    public void Activate()
+    public void Activate(int coin)
     {
         m_TextStage.text = "Stage " + SaveData.Stage.ToString() + " Clear!!";
-        m_TextMoney.text = "+ 100";
+        m_TextMoney.text = "+ " + coin.ToString();
         
         gameObject.SetActive(true);
     }

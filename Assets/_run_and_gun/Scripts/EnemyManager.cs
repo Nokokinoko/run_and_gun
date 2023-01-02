@@ -45,4 +45,5 @@ public class EnemyManager : MonoBehaviour
 
     public int NumEnemy => m_ListEnemys.Count;
     public int NumDestroyEnemy => m_ListEnemys.Count(_ctrl => !_ctrl.IsAlive);
+    public int Coin => NumDestroyEnemy * GameDefinitions.MONEY_BY_ENEMY;
 }

@@ -9,6 +9,8 @@ public class Bullet : MonoBehaviour
     
     public void Fire()
     {
+        transform.position += transform.forward;
+        
         this.UpdateAsObservable()
             .Subscribe(_ => transform.position += transform.forward * m_Speed * Time.deltaTime)
             .AddTo(this);

@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour
             .Subscribe(_transform => {
                 MoneyManager.Instance.GetMoneyByEffect(
                     _transform,
-                    m_MgrEnemy.NumDestroyEnemy * GameDefinitions.MONEY_BY_ENEMY,
+                    m_MgrEnemy.Coin,
                     () => Observable.Timer(TimeSpan.FromSeconds(DELAY_RELOAD))
                         .Subscribe(_ => {
                             SaveData.Stage++;
@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviour
             .Subscribe(_transform => {
                 MoneyManager.Instance.GetMoneyByEffect(
                     _transform,
-                    m_MgrEnemy.NumDestroyEnemy * GameDefinitions.MONEY_BY_ENEMY,
+                    m_MgrEnemy.Coin,
                     () => Observable.Timer(TimeSpan.FromSeconds(DELAY_RELOAD))
                         .Subscribe(_ => ReloadManager.Instance.Reload())
                         .AddTo(this)
@@ -75,7 +75,7 @@ public class UIManager : MonoBehaviour
     {
         m_TopUI.gameObject.SetActive(false);
         m_IngameUI.gameObject.SetActive(false);
-        m_ResultClearUI.Activate();
+        m_ResultClearUI.Activate(m_MgrEnemy.Coin);
         m_ResultFailUI.gameObject.SetActive(false);
         m_MoneyUI.gameObject.SetActive(true);
     }
@@ -85,7 +85,7 @@ public class UIManager : MonoBehaviour
         m_TopUI.gameObject.SetActive(false);
         m_IngameUI.gameObject.SetActive(false);
         m_ResultClearUI.gameObject.SetActive(false);
-        m_ResultFailUI.Activate();
+        m_ResultFailUI.Activate(m_MgrEnemy.Coin);
         m_MoneyUI.gameObject.SetActive(true);
     }
 }

@@ -37,7 +37,6 @@ public class MoneyGetEffectUI : MonoBehaviour
             var icon = (RectTransform)_moneyIconPool.Rent();
             icon.position = fromPos;
             icon.SetAsFirstSibling();
-            icon.GetComponent<Image>().SetNativeSize();
 
             var pos = icon.localPosition;
             var r = Mathf.Sqrt(Random.Range(0f, 1f)) * explodeRadius;
