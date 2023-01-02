@@ -29,6 +29,12 @@ public class MoneyManager : MonoBehaviour
 
     public void GetMoneyByEffect(RectTransform from, int get, Action onComplete)
     {
+        if (get <= 0)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+        
         m_Effect.ShowEffect(from.position, Mathf.CeilToInt(get * m_RatioEffect), () => {
             GetMoney(get);
             onComplete?.Invoke();

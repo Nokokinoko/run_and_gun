@@ -39,60 +39,6 @@ public class PlayerController : MonoBehaviour
             .Where(_collider => _collider.CompareTag(GameDefinitions.TAG_ENEMY))
             .Subscribe(_ => OnDamage())
             .AddTo(this);
-
-        this.UpdateAsObservable()
-            .Subscribe(_ => {
-                if (m_IsMovable)
-                {
-                    ProcessTouch();
-                    
-                    // 砲台を敵に向ける
-                    EnemyController _ctrl = m_MgrEnemy.Nearest();
-                    if (_ctrl != null && _ctrl.Distance < GameDefinitions.DISTANCE)
-                    {
-                        TargetEnemy(_ctrl);
-                        m_HasTarget = true;
-                    }
-                    else
-                    {
-                        m_Tower.localEulerAngles = Vector3.zero;
-                        m_HasTarget = false;
-                    }
-                }
-
-                if (m_NormalizedDirection == Vector2.zero)
-                {
-                    m_Rigidbody.velocity = Vector3.zero;
-                    m_Rigidbody.angularVelocity = Vector3.zero;
-                }
-                else
-                {
-                    Vector3 _Velocity = new Vector3(
-                        m_NormalizedDirection.x,
-                        0.0f,
-                        m_NormalizedDirection.y
-                    );
-                    Vector3 _Lerp = Vector3.Lerp(m_PrevVelocity, _Velocity, Time.deltaTime);
-                    m_Rigidbody.velocity = _Lerp * m_MoveRatio;
-                    m_PrevVelocity = _Velocity;
-
-                    // 自機の回転
-                    m_Rigidbody.rotation = Quaternion.Slerp(
-                        m_Rigidbody.rotation,
-                        Quaternion.LookRotation(_Lerp),
-                        0.8f
-                    );
-
-                    // タイヤの回転
-                    m_ListWheels.ForEach(_wheel => _wheel.Rotate(new Vector3(180.0f, 0.0f, 0.0f) * Time.deltaTime));
-                }
-            })
-            .AddTo(this);
-
-        Observable.Interval(TimeSpan.FromSeconds(GameDefinitions.BULLET_INTERVAL))
-            .Where(_ => m_HasTarget)
-            .Subscribe(_ => Fire())
-            .AddTo(this);
     }
 
     private void ProcessTouch()
@@ -145,6 +91,62 @@ public class PlayerController : MonoBehaviour
     public void GameStart()
     {
         m_IsMovable = true;
+        
+        this.UpdateAsObservable()
+            .Subscribe(_ => {
+                if (m_IsMovable)
+                {
+                    ProcessTouch();
+                    
+                    // 砲台を敵に向ける
+                    EnemyController _ctrl = m_MgrEnemy.Nearest();
+                    if (_ctrl != null && _ctrl.Distance < GameDefinitions.DISTANCE)
+                    {
+                        TargetEnemy(_ctrl);
+                        m_HasTarget = true;
+                    }
+                    else
+                    {
+                        m_Tower.localEulerAngles = Vector3.zero;
+                        m_HasTarget = false;
+                    }
+                }
+
+                if (m_NormalizedDirection == Vector2.zero)
+                {
+                    m_Rigidbody.velocity = Vector3.zero;
+                    m_Rigidbody.angularVelocity = Vector3.zero;
+                }
+                else
+                {
+                    Vector3 _Velocity = new Vector3(
+                        m_NormalizedDirection.x,
+                        0.0f,
+                        m_NormalizedDirection.y
+                    );
+                    Vector3 _Lerp = Vector3.Lerp(m_PrevVelocity, _Velocity, Time.deltaTime);
+                    float _ratio = m_MoveRatio + GameDefinitions.LEVEL_BY_MOVE * SaveData.LevelMove;
+                    m_Rigidbody.velocity = _Lerp * _ratio;
+                    m_PrevVelocity = _Velocity;
+
+                    // 自機の回転
+                    m_Rigidbody.rotation = Quaternion.Slerp(
+                        m_Rigidbody.rotation,
+                        Quaternion.LookRotation(_Lerp),
+                        0.8f
+                    );
+
+                    // タイヤの回転
+                    m_ListWheels.ForEach(_wheel => _wheel.Rotate(new Vector3(180.0f, 0.0f, 0.0f) * Time.deltaTime));
+                }
+            })
+            .AddTo(this);
+
+        float _interval = GameDefinitions.BULLET_INTERVAL - GameDefinitions.LEVEL_BY_BULLET * SaveData.LevelBullet;
+        Observable.Interval(TimeSpan.FromSeconds(_interval))
+            .Where(_ => m_HasTarget)
+            .Subscribe(_ => Fire())
+            .AddTo(this);
     }
 
     public void GameEnd()

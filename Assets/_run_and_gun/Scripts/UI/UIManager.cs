@@ -5,6 +5,7 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private TopUI m_TopUI;
+    [SerializeField] private GameObject m_Tutorial;
     [SerializeField] private IngameUI m_IngameUI;
     [SerializeField] private ResultClearUI m_ResultClearUI;
     [SerializeField] private ResultFailUI m_ResultFailUI;
@@ -54,6 +55,7 @@ public class UIManager : MonoBehaviour
     public void EnableTopUI()
     {
         m_TopUI.gameObject.SetActive(true);
+        m_Tutorial.SetActive(true);
         m_IngameUI.gameObject.SetActive(false);
         m_ResultClearUI.gameObject.SetActive(false);
         m_ResultFailUI.gameObject.SetActive(false);
@@ -65,6 +67,7 @@ public class UIManager : MonoBehaviour
         m_IngameUI.SetTextNum(m_MgrEnemy.NumEnemy);
 
         m_TopUI.gameObject.SetActive(false);
+        m_Tutorial.SetActive(false);
         m_IngameUI.gameObject.SetActive(true);
         m_ResultClearUI.gameObject.SetActive(false);
         m_ResultFailUI.gameObject.SetActive(false);
@@ -74,6 +77,7 @@ public class UIManager : MonoBehaviour
     public void EnableResultClearUI()
     {
         m_TopUI.gameObject.SetActive(false);
+        m_Tutorial.SetActive(false);
         m_IngameUI.gameObject.SetActive(false);
         m_ResultClearUI.Activate(m_MgrEnemy.Coin);
         m_ResultFailUI.gameObject.SetActive(false);
@@ -83,6 +87,7 @@ public class UIManager : MonoBehaviour
     public void EnableResultFailUI()
     {
         m_TopUI.gameObject.SetActive(false);
+        m_Tutorial.SetActive(false);
         m_IngameUI.gameObject.SetActive(false);
         m_ResultClearUI.gameObject.SetActive(false);
         m_ResultFailUI.Activate(m_MgrEnemy.Coin);

@@ -4,6 +4,8 @@ public static class GameDefinitions
     
     public const int LEVEL_MAX = 50;
     public const int NEED_MONEY = 50;
+    public const float LEVEL_BY_MOVE = 0.02f;
+    public const float LEVEL_BY_BULLET = 0.01f;
     
     public const string TAG_ENEMY = "Enemy";
     public const string TAG_BULLET = "Bullet";
@@ -13,5 +15,5 @@ public static class GameDefinitions
     public const float ENEMY_SPEED = 3.5f;
     public const int MONEY_BY_ENEMY = 10;
     
-    public const float DISTANCE = 10.0f;
+    public const float DISTANCE = 20.0f;
 }

@@ -40,7 +40,7 @@ public class EnemyManager : MonoBehaviour
 
     public EnemyController Nearest()
     {
-        return m_ListEnemys.OrderBy(_ctrl => _ctrl.Distance).FirstOrDefault();
+        return m_ListEnemys.Where(_ctrl => _ctrl.IsAlive).OrderBy(_ctrl => _ctrl.Distance).FirstOrDefault();
     }
 
     public int NumEnemy => m_ListEnemys.Count;
