@@ -11,7 +11,7 @@ public class UpgradeButton : MonoBehaviour
     public enum ENUM_UPGRADE
     {
         UPGRADE_MOVE,
-        UPGRADE_BULLET,
+        UPGRADE_THROW,
     }
     [SerializeField] private ENUM_UPGRADE m_Upgrade;
 
@@ -53,8 +53,8 @@ public class UpgradeButton : MonoBehaviour
         {
             case ENUM_UPGRADE.UPGRADE_MOVE:
                 return SaveData.LevelMove;
-            case ENUM_UPGRADE.UPGRADE_BULLET:
-                return SaveData.LevelBullet;
+            case ENUM_UPGRADE.UPGRADE_THROW:
+                return SaveData.LevelThrow;
         }
         return 1;
     }
@@ -87,8 +87,8 @@ public class UpgradeButton : MonoBehaviour
             case ENUM_UPGRADE.UPGRADE_MOVE:
                 SaveData.LevelMove++;
                 break;
-            case ENUM_UPGRADE.UPGRADE_BULLET:
-                SaveData.LevelBullet++;
+            case ENUM_UPGRADE.UPGRADE_THROW:
+                SaveData.LevelThrow++;
                 break;
         }
         

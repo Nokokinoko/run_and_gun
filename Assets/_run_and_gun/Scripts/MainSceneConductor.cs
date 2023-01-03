@@ -57,6 +57,8 @@ public class MainSceneConductor : MonoBehaviour
         m_VCUp.enabled = true;
 
         m_MgrUI.EnableIngameUI();
+        m_CtrlPlayer.Preprocess();
+        
         Observable.Timer(TimeSpan.FromSeconds(GameDefinitions.TIME_CINEMACHINE_TRANSITION))
             .Subscribe(_ => {
                 m_CtrlPlayer.GameStart();
@@ -70,6 +72,7 @@ public class MainSceneConductor : MonoBehaviour
         m_VCUp.enabled = false;
         
         m_MgrUI.EnableResultClearUI();
+        m_CtrlPlayer.LookAtCamera();
         m_CtrlPlayer.GameEnd();
         m_MgrEnemy.GameEnd();
 

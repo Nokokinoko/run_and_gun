@@ -3,7 +3,7 @@ using UnityEngine;
 public static partial class SaveData
 {
     private const string KEY_LEVEL_MOVE = "LevelMove";
-    private const string KEY_LEVEL_BULLET = "LevelBullet";
+    private const string KEY_LEVEL_THROW = "LevelThrow";
 
     public static int LevelMove
     {
@@ -11,9 +11,9 @@ public static partial class SaveData
         set=>SetData(KEY_LEVEL_MOVE, Mathf.Max(value, 1));
     }
 
-    public static int LevelBullet
+    public static int LevelThrow
     {
-        get => GetData(KEY_LEVEL_BULLET, 1);
-        set=>SetData(KEY_LEVEL_BULLET, Mathf.Max(value, 1));
+        get => GetData(KEY_LEVEL_THROW, 1);
+        set=>SetData(KEY_LEVEL_THROW, Mathf.Max(value, 1));
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UniRx;
 using UniRx.Triggers;
@@ -17,7 +18,8 @@ public class EnemyController : MonoBehaviour
         ENEMY_LEVEL_3 = 3,
     }
 
-    [SerializeField] private MeshRenderer m_Renderer;
+    [SerializeField] private Animator m_Animator;
+    [SerializeField] private SkinnedMeshRenderer m_Renderer;
     [SerializeField] private ENUM_ENEMY_LEVEL m_Level;
     [SerializeField] private List<Material> m_ListMaterials;
 
@@ -36,10 +38,8 @@ public class EnemyController : MonoBehaviour
     private float m_Distance;
     public float Distance => m_Distance;
 
-    private void OnValidate()
-    {
-        ChangeMaterial();
-    }
+    private const string KEY_ANIMATOR_IS_ALIVE = "IsAlive";
+    private const string NAME_ANIMATION_DEATH = "Death";
 
     private void ChangeMaterial()
     {
@@ -51,11 +51,15 @@ public class EnemyController : MonoBehaviour
         }
 
         Material _mat = m_ListMaterials[_key];
-        m_Renderer.material = _mat;
+        Material[] _renderer = m_Renderer.materials;
+        _renderer[GameDefinitions.KEY_MATERIAL_BODY] = _mat;
+        m_Renderer.materials = _renderer;
     }
 
     private void Awake()
     {
+        ChangeMaterial();
+        
         m_Transform = transform;
         m_NavAgent = GetComponent<NavMeshAgent>();
         m_NavAgent.speed = 0.0f;
@@ -81,20 +85,9 @@ public class EnemyController : MonoBehaviour
             .AddTo(this);
 
         m_Collider.OnTriggerEnterAsObservable()
-            .Where(_collider => _collider.CompareTag(GameDefinitions.TAG_BULLET))
-            .Subscribe(_collider => OnHit(_collider))
+            .Where(_collider => _collider.CompareTag(GameDefinitions.TAG_AXE))
+            .Subscribe(_collider => OnHit(_collider).Forget())
             .AddTo(this);
-    }
-
-    private void Start()
-    {
-        DOTween.To(x => {
-            Vector3 _rotation = m_Transform.rotation.eulerAngles;
-            _rotation.z = x;
-            m_Transform.rotation = Quaternion.Euler(_rotation);
-        }, 0.0f, 360.0f, 2.0f)
-            .SetEase(Ease.Linear)
-            .SetLoops(-1);
     }
 
     public void GameStart()
@@ -108,13 +101,19 @@ public class EnemyController : MonoBehaviour
         m_NavAgent.enabled = false;
     }
 
-    private void OnHit(Collider collider)
+    private async UniTask OnHit(Collider collider)
     {
         Destroy(collider.gameObject);
 
         if (m_Level == ENUM_ENEMY_LEVEL.ENEMY_LEVEL_1)
         {
             m_IsAlive = false;
+            m_Animator.SetBool(KEY_ANIMATOR_IS_ALIVE, false);
+            
+            await UniTask.WaitUntil(() => m_Animator.GetCurrentAnimatorStateInfo(0).IsName(NAME_ANIMATION_DEATH));
+
+            await UniTask.WaitUntil(() => 1.0f <= m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+            
             gameObject.SetActive(false);
         }
         else
