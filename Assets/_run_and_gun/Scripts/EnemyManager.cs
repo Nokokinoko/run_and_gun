@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 
@@ -11,15 +10,15 @@ public class EnemyManager : MonoBehaviour
     private PlayerController m_CtrlPlayer = null;
     public PlayerController CtrlPlayer { set { m_CtrlPlayer = value; } }
     
-    private async UniTask Start()
+    public void GraspEnemy()
     {
-        await UniTask.WaitUntil(() => m_CtrlPlayer != null);
-        
-        foreach (Transform _child in transform)
+        int _loop = Mathf.FloorToInt((float)(SaveData.Stage - 1) / GameDefinitions.NUM_STAGE);
+
+        foreach (var _child in GetComponentsInChildren<EnemyController>())
         {
-            var _ctrl = _child.GetComponent<EnemyController>();
-            _ctrl.Target = m_CtrlPlayer.transform;
-            m_ListEnemys.Add(_ctrl);
+            _child.Plus(_loop);
+            _child.Target = m_CtrlPlayer.transform;
+            m_ListEnemys.Add(_child);
         }
     }
 

@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 
@@ -12,7 +13,9 @@ public class UIManager : MonoBehaviour
 
     [Space]
     [SerializeField] private MoneyUI m_MoneyUI;
-    [SerializeField] private EnemyManager m_MgrEnemy;
+
+    private EnemyManager m_MgrEnemy;
+    public EnemyManager MgrEnemy { set { m_MgrEnemy = value; } }
 
     private const float DELAY_RELOAD = 1.0f;
     
@@ -46,6 +49,11 @@ public class UIManager : MonoBehaviour
                 );
             })
             .AddTo(this);
+    }
+
+    private async UniTask Start()
+    {
+        await UniTask.WaitUntil(() => m_MgrEnemy != null);
         
         this.ObserveEveryValueChanged(_ => m_MgrEnemy.NumDestroyEnemy)
             .Subscribe(_num => m_IngameUI.SetTextNumDestroy(_num))

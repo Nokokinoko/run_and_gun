@@ -1,5 +1,6 @@
 using System;
 using Cinemachine;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ public class MainSceneConductor : MonoBehaviour
 
     [Space]
     [SerializeField] private UIManager m_MgrUI;
-    [SerializeField] private Stage m_Stage;
+    [SerializeField] private StageLoader m_StageLoader;
     [SerializeField] private PlayerController m_CtrlPlayer;
     [SerializeField] private EnemyManager m_MgrEnemy;
 
@@ -27,11 +28,16 @@ public class MainSceneConductor : MonoBehaviour
         m_Particle.Stop();
     }
 
-    private void Start()
+    private async UniTask Start()
     {
-        m_Stage.MgrEnemy = m_MgrEnemy;
+        m_MgrUI.MgrEnemy = m_MgrEnemy;
+        m_StageLoader.MgrEnemy = m_MgrEnemy;
         m_CtrlPlayer.MgrEnemy = m_MgrEnemy;
         m_MgrEnemy.CtrlPlayer = m_CtrlPlayer;
+
+        await UniTask.WaitUntil(() => m_StageLoader.IsLoaded);
+        
+        m_MgrEnemy.GraspEnemy();
         
         GameEventManager
             .OnReceivedAsObservable(GameEvent.GameStart)

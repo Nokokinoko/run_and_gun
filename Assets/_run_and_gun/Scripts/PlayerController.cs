@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
                     
                     // 最寄りの敵を検知
                     EnemyController _ctrl = m_MgrEnemy.Nearest();
-                    if (_ctrl != null && _ctrl.Distance < GameDefinitions.DISTANCE)
+                    if (_ctrl != null && _ctrl.Distance < GameDefinitions.AXE_DISTANCE)
                     {
                         Vector3 _diff = _ctrl.Position - transform.position;
                         float _rotateY = Mathf.Atan2(_diff.x, _diff.z) * Mathf.Rad2Deg;

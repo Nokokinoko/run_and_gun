@@ -41,6 +41,19 @@ public class EnemyController : MonoBehaviour
     private const string KEY_ANIMATOR_IS_ALIVE = "IsAlive";
     private const string NAME_ANIMATION_DEATH = "Death";
 
+    public void Plus(int plus)
+    {
+        if (plus <= 0)
+        {
+            // do not process
+            return;
+        }
+        
+        int _level = (int)m_Level;
+        int _to = Mathf.Max(_level + plus, (int)ENUM_ENEMY_LEVEL.ENEMY_LEVEL_3);
+        m_Level = (ENUM_ENEMY_LEVEL)_to;
+    }
+
     private void ChangeMaterial()
     {
         int _key = (int)m_Level - 1;
@@ -73,7 +86,7 @@ public class EnemyController : MonoBehaviour
                 
                 // 二点間の距離
                 m_Distance = Vector3.Distance(_targetPosition, Position);
-                m_NavAgent.speed = (m_Distance < GameDefinitions.DISTANCE) ? GameDefinitions.ENEMY_SPEED : 0.0f;
+                m_NavAgent.speed = (m_Distance < GameDefinitions.ENEMY_DISTANCE) ? GameDefinitions.ENEMY_SPEED : 0.0f;
                 
                 Vector3 _direction = _targetPosition - Position;
                 _direction.y = 0.0f;
@@ -108,6 +121,7 @@ public class EnemyController : MonoBehaviour
         if (m_Level == ENUM_ENEMY_LEVEL.ENEMY_LEVEL_1)
         {
             m_IsAlive = false;
+            m_Collider.enabled = false;
             m_Animator.SetBool(KEY_ANIMATOR_IS_ALIVE, false);
             
             await UniTask.WaitUntil(() => m_Animator.GetCurrentAnimatorStateInfo(0).IsName(NAME_ANIMATION_DEATH));
