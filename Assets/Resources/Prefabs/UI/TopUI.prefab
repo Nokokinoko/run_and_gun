@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0686270f9ccb948ebac02350a5d990c5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e846d8f59a3f44f58bd595bb07341fbc, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 3097454181125328426}
   - component: {fileID: 8081541639900167906}
   m_Layer: 5
-  m_Name: ButtonUpgradeBullet
+  m_Name: ButtonUpgradeThrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1442,7 +1442,7 @@ GameObject:
   - component: {fileID: 7500545120540125938}
   - component: {fileID: 290233625062145019}
   m_Layer: 5
-  m_Name: Bullet
+  m_Name: Throw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1624,7 +1624,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c9a8707694f6b4c26a3b7a280b7179ed, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6254a9a48c3cb48949129b9b936ab5fd, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1833,7 +1833,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Bullet Speed
+  m_text: Throw Speed
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 81b720d83ce2549238df6a9e4c19a99d, type: 2}
   m_sharedMaterial: {fileID: -5519095018833341176, guid: 81b720d83ce2549238df6a9e4c19a99d, type: 2}
