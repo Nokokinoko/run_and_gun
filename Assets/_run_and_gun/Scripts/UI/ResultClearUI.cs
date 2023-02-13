@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -21,5 +22,18 @@ public class ResultClearUI : MonoBehaviour
         m_TextMoney.text = "+ " + coin.ToString();
         
         gameObject.SetActive(true);
+        
+        Interactable().Forget();
+    }
+
+    private async UniTask Interactable()
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+        
+        AdsManager.ShowInter();
+        
+        await UniTask.Delay(TimeSpan.FromSeconds(1.0f));
+
+        m_ButtonNext.interactable = true;
     }
 }
