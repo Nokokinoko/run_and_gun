@@ -1,48 +1,68 @@
-using Cysharp.Threading.Tasks;
+using GoogleMobileAds.Api;
 using UnityEngine;
-using UnityEngine.Advertisements;
 
-public static class AdsManager
+public class AdsManager : SingletonMonoBehaviour<AdsManager>
 {
-    private const string ID_GAME_ANDROID = "5163517";
-    private const string ID_INTER_ANDROID = "Interstitial_Android";
-    private const string ID_BANNER_ANDROID = "Banner_Android";
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    private const string IdBanner = "ca-app-pub-3940256099942544/6300978111";
+    private const string IdInter = "ca-app-pub-3940256099942544/1033173712";
+#elif UNITY_ANDROID
+    private const string IdBanner = "ca-app-pub-7370150359464678/4691281797";
+    private const string IdInter = "ca-app-pub-7370150359464678/2975440098";
+#endif
+
+    private InterstitialAd m_Inter;
+    private BannerView m_Banner;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Initialize()
     {
-        Advertisement.Initialize(ID_GAME_ANDROID);
+        MobileAds.Initialize(status => { });
     }
 
-    public static void ShowInter()
+    public void LoadInter()
     {
-        Advertisement.Show(ID_INTER_ANDROID, new AdsListener());
-    }
-
-    public static async UniTask ShowBanner()
-    {
-        Advertisement.Banner.SetPosition(BannerPosition.BOTTOM_CENTER);
-        Advertisement.Banner.Load(ID_BANNER_ANDROID);
-
-        await UniTask.WaitUntil(() => Advertisement.Banner.isLoaded);
+        m_Inter?.Destroy();
         
-        Advertisement.Banner.Show(ID_BANNER_ANDROID);
+        AdRequest _req = new AdRequest.Builder().Build();
+        InterstitialAd.Load(
+            IdInter, _req, ((ad, error) => {
+                if (error != null || ad == null)
+                {
+#if UNITY_EDITOR
+                    Debug.Log("Interstitial ad failed: " + error);
+#endif
+                    return;
+                }
+
+                m_Inter = ad;
+
+                m_Inter.OnAdFullScreenContentClosed += () => LoadInter();
+                m_Inter.OnAdFullScreenContentFailed += _ => LoadInter();
+            })
+        );
     }
 
-    public static void HideBanner()
+    public void ShowInter()
     {
-        Advertisement.Banner.Hide();
+        if (m_Inter != null && m_Inter.CanShowAd())
+        {
+            m_Inter.Show();
+        }
     }
-}
 
-public class AdsListener : IUnityAdsShowListener
-{
-    public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message) { }
-    public void OnUnityAdsShowStart(string placementId) { }
-    public void OnUnityAdsShowClick(string placementId) { }
-
-    public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState)
+    public void ShowBanner()
     {
-        Advertisement.Load(placementId);
+        m_Banner?.Destroy();
+        
+        m_Banner = new BannerView(IdBanner, AdSize.Banner, AdPosition.Bottom);
+
+        AdRequest _req = new AdRequest.Builder().Build();
+        m_Banner.LoadAd(_req);
+    }
+
+    public void HideBanner()
+    {
+        m_Banner?.Destroy();
     }
 }

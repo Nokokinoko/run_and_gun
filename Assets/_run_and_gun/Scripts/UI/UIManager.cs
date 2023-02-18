@@ -62,7 +62,8 @@ public class UIManager : MonoBehaviour
 
     public void EnableTopUI()
     {
-        AdsManager.ShowBanner().Forget();
+        AdsManager.Instance.LoadInter();
+        AdsManager.Instance.ShowBanner();
         
         m_TopUI.gameObject.SetActive(true);
         m_Tutorial.SetActive(true);
@@ -74,7 +75,7 @@ public class UIManager : MonoBehaviour
 
     public void EnableIngameUI()
     {
-        AdsManager.HideBanner();
+        AdsManager.Instance.HideBanner();
         m_IngameUI.SetTextNum(m_MgrEnemy.NumEnemy);
 
         m_TopUI.gameObject.SetActive(false);

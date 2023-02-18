@@ -30,7 +30,7 @@ public class ResultClearUI : MonoBehaviour
     {
         await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
         
-        AdsManager.ShowInter();
+        AdsManager.Instance.ShowInter();
         
         await UniTask.Delay(TimeSpan.FromSeconds(1.0f));
 
