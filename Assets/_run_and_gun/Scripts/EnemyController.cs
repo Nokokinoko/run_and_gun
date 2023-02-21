@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -98,7 +97,7 @@ public class EnemyController : MonoBehaviour
             .AddTo(this);
 
         m_Collider.OnTriggerEnterAsObservable()
-            .Where(_collider => _collider.CompareTag(GameDefinitions.TAG_AXE))
+            .Where(_collider => _collider.CompareTag(GameDefinitions.TAG_WEAPON))
             .Subscribe(_collider => OnHit(_collider).Forget())
             .AddTo(this);
     }

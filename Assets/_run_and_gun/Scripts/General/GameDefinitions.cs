@@ -10,11 +10,11 @@ public static class GameDefinitions
     public const float LEVEL_BY_THROW = 0.01f;
     
     public const string TAG_ENEMY = "Enemy";
-    public const string TAG_AXE = "Axe";
+    public const string TAG_WEAPON = "Weapon";
 
-    public const float AXE_DISTANCE = 20.0f;
-    public const float AXE_INTERVAL = 1.0f;
-    public const float AXE_LIFETIME = 5.0f;
+    public const float WEAPON_DISTANCE = 20.0f;
+    public const float WEAPON_INTERVAL = 1.0f;
+    public const float WEAPON_LIFETIME = 5.0f;
 
     public const int KEY_MATERIAL_BODY = 2;
     public const float ENEMY_SPEED = 5.0f;

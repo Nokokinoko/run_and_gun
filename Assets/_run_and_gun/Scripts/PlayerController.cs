@@ -17,15 +17,13 @@ public class PlayerController : MonoBehaviour
     private Vector2 m_NormalizedDirection = Vector2.zero;
     private Vector3 m_PrevVelocity = Vector3.zero;
 
-    private IDisposable m_HiDisposable;
-
     [SerializeField] private float m_MoveRatio;
     [SerializeField] private Transform m_Body;
     [SerializeField] private Animator m_Animator;
 
     [Space]
-    [SerializeField] private Transform m_ParentAxe;
-    [SerializeField] private GameObject m_PrefabAxe;
+    [SerializeField] private Transform m_ParentWeapon;
+    [SerializeField] private GameObject m_PrefabWeapon;
 
     private EnemyManager m_MgrEnemy;
     public EnemyManager MgrEnemy { set { m_MgrEnemy = value; } }
@@ -33,7 +31,6 @@ public class PlayerController : MonoBehaviour
     private const float TOUCH_RADIUS = 50.0f;
 
     private const string KEY_ANIMATOR_IS_MOVE = "IsMove";
-    private const string NAME_ANIMATION_HI = "Hi";
     private const string NAME_ANIMATION_ATTACK = "Attack";
     private const string NAME_ANIMATION_DEATH = "Death";
 
@@ -48,16 +45,8 @@ public class PlayerController : MonoBehaviour
             .AddTo(this);
     }
 
-    private void Start()
-    {
-        m_HiDisposable = Observable.Interval(TimeSpan.FromSeconds(3.0f))
-            .Subscribe(_ => m_Animator.Play(NAME_ANIMATION_HI))
-            .AddTo(this);
-    }
-
     public void Preprocess()
     {
-        m_HiDisposable.Dispose();
         m_Body.DOLocalRotate(Vector3.zero, 1.0f).SetEase(Ease.Linear);
     }
 
@@ -73,7 +62,7 @@ public class PlayerController : MonoBehaviour
                     
                     // 最寄りの敵を検知
                     EnemyController _ctrl = m_MgrEnemy.Nearest();
-                    if (_ctrl != null && _ctrl.Distance < GameDefinitions.AXE_DISTANCE)
+                    if (_ctrl != null && _ctrl.Distance < GameDefinitions.WEAPON_DISTANCE)
                     {
                         Vector3 _diff = _ctrl.Position - transform.position;
                         float _rotateY = Mathf.Atan2(_diff.x, _diff.z) * Mathf.Rad2Deg;
@@ -116,10 +105,10 @@ public class PlayerController : MonoBehaviour
             })
             .AddTo(this);
 
-        float _interval = GameDefinitions.AXE_INTERVAL - GameDefinitions.LEVEL_BY_THROW * SaveData.LevelThrow;
+        float _interval = GameDefinitions.WEAPON_INTERVAL - GameDefinitions.LEVEL_BY_THROW * SaveData.LevelThrow;
         Observable.Interval(TimeSpan.FromSeconds(_interval))
             .Where(_ => m_TargetDir != Vector3.one)
-            .Subscribe(_ => ThrowAxe())
+            .Subscribe(_ => ThrowWeapon())
             .AddTo(this);
     }
 
@@ -152,14 +141,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void ThrowAxe()
+    private void ThrowWeapon()
     {
-        GameObject _prefab = Instantiate(m_PrefabAxe, m_ParentAxe, true);
-        Axe _axe = _prefab.GetComponent<Axe>();
+        GameObject _prefab = Instantiate(m_PrefabWeapon, m_ParentWeapon, true);
+        Weapon _weapon = _prefab.GetComponent<Weapon>();
         Vector3 _position = transform.position;
         _position.y = 3.0f;
-        _axe.transform.SetPositionAndRotation(_position, Quaternion.Euler(m_TargetDir));
-        _axe.Throw();
+        _weapon.transform.SetPositionAndRotation(_position, Quaternion.Euler(m_TargetDir));
+        _weapon.Throw();
         
         // アニメーション後に自動でIdleへ遷移
         m_Animator.Play(NAME_ANIMATION_ATTACK);
