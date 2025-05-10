@@ -28,10 +28,6 @@ public class ResultClearUI : MonoBehaviour
 
     private async UniTask Interactable()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
-        
-        AdsManager.Instance.ShowInter();
-        
         await UniTask.Delay(TimeSpan.FromSeconds(1.0f));
 
         m_ButtonNext.interactable = true;
