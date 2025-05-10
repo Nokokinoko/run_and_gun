@@ -894,6 +894,11 @@ PlayerSettings:
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Build: 0
+    Collab: 0
+    Game Performance: 0
+    Purchasing: 0
+    UDP: 0
     UNet: 1
     Unity Ads: 0
   luminIcon:
@@ -910,7 +915,7 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 973013dc-5d37-4512-8c08-c426bbbcb009
+  cloudProjectId: f2da429d-5830-425b-8e99-0c8aa7fee05a
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Slash'n Smash
